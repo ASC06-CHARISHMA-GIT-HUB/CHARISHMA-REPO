@@ -1,8 +1,14 @@
 package Pack1;
 
+import java.util.List;
+import java.util.Set;
+
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -13,7 +19,35 @@ public class TC005 {
 		WebDriverManager.chromedriver().setup();
 		WebDriver driver=new ChromeDriver();
 		driver.get("https://letcode.in/window");
+		System.out.println("parent window:"+driver.getWindowHandle());
 		driver.findElement(By.id("multi")).click();
+		Set<String>windows=driver.getWindowHandles();
+		System.out.println("No of windows:"+windows.size());
+		for(String childwindow: windows) {
+			driver.switchTo().window(childwindow);
+			System.out.println("url is:"+driver.getCurrentUrl());
+			if(driver.getCurrentUrl().equals("https://letcode.in/window")) {
+				driver.findElement(By.id("confirm")).click();
+		        Alert confirmalert=driver.switchTo().alert();
+		        System.out.println("message is:"+confirmalert.getText());
+		        
+		        confirmalert.accept();
+		        driver.findElement(By.id("prompt")).click();
+		        Alert promptalert=driver.switchTo().alert();
+		        System.out.println("message is:"+promptalert.getText());
+		        promptalert.sendKeys("pooja");
+		        promptalert.accept();
+			}
+			if(driver.getCurrentUrl().equals("https://letcode.in/window")) {
+				WebElement show=driver.findElement(By.id("input-show"));
+				
+				Select sle1=new Select(show);
+//				sle.selectByIndex(3);
+				List<WebElement> showalloptions=sle1.getOptions();
+				for(WebElement option1:showalloptions) {
+					System.out.println("show options:"+option1.getText());
+				}
+			}
+		}
 	}
-
 }
