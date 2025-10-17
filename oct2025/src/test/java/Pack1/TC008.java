@@ -20,8 +20,18 @@ import static org.testng.Assert.assertFalse;
 
 import static org.testng.Assert.assertTrue;
  
+import java.io.File;
+
+import java.io.IOException;
+
 import java.time.Duration;
  
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.openqa.selenium.By;
 
 import org.openqa.selenium.WebDriver;
@@ -49,24 +59,6 @@ import org.testng.annotations.AfterSuite;
 public class TC008 {
 
 	WebDriver driver;
-
-	@Test
-
-	public void test2()
-
-	{
-
-		System.out.println("this is test2");
-
-	}
-
-	public void test3()
-
-	{
-
-		System.out.println("This is test3");
-
-	}
 
 
   @Test(dataProvider = "logindata")
@@ -101,48 +93,15 @@ public class TC008 {
 
 			}
 
-	  /*
-
-	  driver.findElement(By.name("username")).sendKeys(uname);
-
-		driver.findElement(By.name("password")).sendKeys(pword);
-
-		driver.findElement(By.xpath("//button[@type='submit']")).click();
-
-		WebElement dashborad=driver.findElement(By.xpath("//h6[text()='Dashboard']"));
-
-		if(dashborad.isDisplayed())
-
-		{
-
-		assertTrue(true,"dashboard is dispalyed");
-
-		}
-
-		else
-
-		{
-
-			assertFalse(true,"dashboard is not dispalyed");
-
-		}
-
-		*/
-
 
 	}
 
-  @Parameters("browser")
 
   @BeforeMethod
 
-  public void beforeMethod(String browser) {
+  public void beforeMethod() {
 
 	  System.out.println("This is before method");
-
-	  if(browser.equals("chrome"))
-
-	  {
 
 	  WebDriverManager.chromedriver().setup();
 
@@ -151,36 +110,6 @@ public class TC008 {
 		driver.manage().window().maximize();
 
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-
-	  }
-
-	  else if(browser.equals("edge"))
-
-	  {
-
-	  WebDriverManager.edgedriver().setup();
-
-		driver=new EdgeDriver();
-
-		driver.manage().window().maximize();
-
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-
-}
-
-	  else if(browser.equals("firefox"))
-
-	  {
-
-	  WebDriverManager.firefoxdriver().setup();
-
-		driver=new FirefoxDriver();
-
-		driver.manage().window().maximize();
-
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-
-} 
 
   }
 
@@ -191,73 +120,45 @@ public class TC008 {
 
 	  System.out.println("This is after method");
 
-	  driver.quit();
-
   }
 
- 
+
  
   @DataProvider
 
-  public Object[][] logindata() {
+  public Object[][] logindata() throws InvalidFormatException, IOException {
 
-    return new Object[][] {
+	  String[][] data=new String[3][2];
 
-      new Object[] { "Admin", "admin123" },
+	  String projectpath=System.getProperty("user.dir");
 
-      new Object[] { "pooja", "welcome" },
+	  File file1=new File(projectpath+"\\inputdata.xlsx");
 
-    };
+		XSSFWorkbook workbook=new XSSFWorkbook(file1);
 
-  }
+		XSSFSheet worksheet=workbook.getSheetAt(0);
 
-  @BeforeClass
+		int rowcount=worksheet.getPhysicalNumberOfRows();
 
-  public void beforeClass() {
+		System.out.println("rows:"+rowcount);
 
-	  System.out.println("This is before class");
 
-  }
- 
-  @AfterClass
+		for(int i=0;i<rowcount;i++)
 
-  public void afterClass() {
+		{
 
-	  System.out.println("This is after class");
+			data[i][0]=worksheet.getRow(i).getCell(0).getStringCellValue();
 
-  }
- 
-  @BeforeTest
+			data[i][1]=worksheet.getRow(i).getCell(1).getStringCellValue();
 
-  public void beforeTest() {
+		}
 
-	  System.out.println("This is before test");
 
-  }
- 
-  @AfterTest
+    return data;
 
-  public void afterTest() {
+    }
 
-	  System.out.println("This is after test");
 
-  }
- 
-  @BeforeSuite
-
-  public void beforeSuite() {
-
-	  System.out.println("This is before suite");
-
-  }
- 
-  @AfterSuite
-
-  public void afterSuite() {
-
-	  System.out.println("This is after suite");
-
-  }
  
 }
 

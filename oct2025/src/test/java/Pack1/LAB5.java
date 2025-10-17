@@ -86,12 +86,12 @@ public class LAB5 {
         }
         driver.findElement(By.xpath("//input[@value='Continue']")).click();
         if (driver.getPageSource().contains("Your Account Has Been Created!")) {
-        	System.out.println("🎉 Registration successful!");
+        	System.out.println(" Registration successful!");
         } else if (driver.getPageSource().contains("Warning")) {
-        	System.out.println("⚠️ Registration failed – check validation warnings.");
+        	System.out.println("Registration failed – check validation warnings.");
         }
         else {
-        	System.out.println("⚠️ Registration might have failed – verify inputs.");
+        	System.out.println("Registration might have failed – verify inputs.");
         }
         WebElement continueBtn = driver.findElement(By.xpath("//a[text()='Continue']"));
         continueBtn.click();
